@@ -5,14 +5,16 @@ import (
 	   "net/http"
 	   "strconv"
 	   //"reflect"
-	   //"log"
+	   "log"
 )
 type ServiceProvider struct{
 	ID int `json:"id"`
 	Name string `json:"name"`
 }
 
+
 var serviceproviders []ServiceProvider
+var sp1 []ServiceProvider
 
 func main() {
 router := gin.Default()
@@ -52,13 +54,26 @@ func getServiceProvider(c *gin.Context){
 }
 func addServiceProvider(c *gin.Context) {
 	var serviceprovider ServiceProvider
-	
 	c.BindJSON(&serviceprovider)
+	log.Println(serviceprovider)
+	//serviceproviders=append(serviceproviders,serviceprovider)
+	for _,item:=range serviceproviders{
+		if item.ID==serviceprovider.ID{
+			c.JSON(409,gin.H{"status":409,"message":"service provider already exists"})
+			return
+		}
+	}
 	serviceproviders=append(serviceproviders,serviceprovider)
 	c.JSON(http.StatusOK,gin.H{
 		"id":serviceprovider.ID,
 		"name":serviceprovider.Name,
 	})
+	//serviceproviders=append(serviceproviders,serviceprovider)
+	//c.JSON(http.StatusOK,gin.H{
+	//	"id":serviceprovider.ID,
+	//	"name":serviceprovider.Name,
+	//})
+	
 }
 func updateServiceProvider(c *gin.Context){
 
